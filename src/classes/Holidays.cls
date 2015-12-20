@@ -1,16 +1,16 @@
 public with sharing class Holidays {
-	List<Holiday> orgHolidays;
+	Set<Date> allDays = new Set<Date>();
 
 	public Holidays() {
-		orgHolidays = [select ActivityDate from Holiday];
+		Holiday[] orgHolidays = [select ActivityDate, IsAllDay from Holiday];
+		for (Holiday h : orgHolidays) {
+			if (h.IsAllDay) {
+				allDays.add(h.ActivityDate);
+			}
+		}
 	}
 
 	public Boolean isHoliday(Date d) {
-		for (Holiday h : orgHolidays) {
-			if (h.ActivityDate == d) {
-				return true;
-			}
-		}
-		return false;
+		return allDays.contains(d);
 	}
 }
